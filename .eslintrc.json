@@ -11,9 +11,7 @@
     "prefer-template": [
       "error"
     ],
-    "semi": [
-      "error"
-    ],
+    // "semi": ["error"],
     "quotes": [
       "error",
       "double"
