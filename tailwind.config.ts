@@ -66,6 +66,35 @@ const config: Config = {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+      backgroundImage: {
+        "gradient-dynamic":
+          "linear-gradient(var(--deg), var(--tw-gradient-stops))",
+      },
+      animation: {
+        shine: "shine var(--duration) infinite linear",
+        "deg-rotate": "deg-rotate 3s linear infinite",
+      },
+      keyframes: {
+        shine: {
+          "0%": {
+            "background-position": "0% 0%",
+          },
+          "50%": {
+            "background-position": "100% 100%",
+          },
+          to: {
+            "background-position": "0% 0%",
+          },
+        },
+        "deg-rotate": {
+          "0%": {
+            "--deg": "0deg",
+          },
+          to: {
+            "--deg": "360deg",
+          },
+        },
+      },
     },
   },
   plugins: [require("tailwindcss-animate")],
