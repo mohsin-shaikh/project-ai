@@ -1,11 +1,12 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 import {
+  ArrowDownRight,
+  ArrowUpLeft,
   Bot,
   Download,
-  Maximize2,
   MessageCircle,
   RefreshCw,
   X,
@@ -14,6 +15,12 @@ import {
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { cn } from "@/lib/utils"
 
 interface Message {
@@ -68,6 +75,7 @@ export default function Chatbot() {
 
   const [input, setInput] = useState("")
   const [isOpen, setIsOpen] = useState(false)
+  const [isMaximized, setIsMaximized] = useState(false)
 
   const toggleChatbot = () => {
     setIsOpen(!isOpen)
@@ -148,6 +156,19 @@ export default function Chatbot() {
     color: "var(--messageInnerText, var(--messageText, inherit))",
   }
 
+  useEffect(() => {
+    if (window && window.parent) {
+      window.parent.postMessage(
+        {
+          height: isMaximized ? 5000 : 750,
+          width: isMaximized ? 650 : 400,
+        },
+        "*"
+      )
+    }
+    return () => {}
+  }, [isMaximized])
+
   return (
     <div
       className="theme-wrapper ![font-size:var(--fontSize)] ![line-height:var(--lineHeight)]"
@@ -167,7 +188,8 @@ export default function Chatbot() {
           >
             <div
               className={cn(
-                "ease-[cubic-bezier(0,1.2,1,1)] -ml-6 grid origin-bottom-right translate-x-3 scale-100 grid-rows-[1fr] overflow-hidden transition-all duration-200",
+                "ease-[cubic-bezier(0,1.2,1,1)]",
+                "grid origin-bottom-right grid-rows-[1fr] overflow-hidden transition-all duration-200",
                 isOpen ? "-ml-6 translate-x-3 scale-100" : "scale-0"
               )}
             >
@@ -197,20 +219,67 @@ export default function Chatbot() {
                       <div className="flex-1 truncate">
                         <span className="font-semibold">ChatBot</span>
                       </div>
-                      <div className="flex shrink-0 flex-row items-center gap-1">
-                        <Button variant="ghost" size="icon" className="h-8 w-8">
-                          <RefreshCw className="h-4 w-4" />
-                        </Button>
-                        <Button variant="ghost" size="icon" className="h-8 w-8">
-                          <Download className="h-4 w-4" />
-                        </Button>
-                        <Button variant="ghost" size="icon" className="h-8 w-8">
-                          <Maximize2 className="h-4 w-4" />
-                        </Button>
-                        <Button variant="ghost" size="icon" className="h-8 w-8">
-                          <X className="h-4 w-4" />
-                        </Button>
-                      </div>
+                      <TooltipProvider delayDuration={0}>
+                        <div className="flex shrink-0 flex-row items-center gap-1">
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-8 w-8"
+                              >
+                                <RefreshCw className="h-4 w-4" />
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <span className="font-bold">Restart</span>
+                            </TooltipContent>
+                          </Tooltip>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-8 w-8"
+                              >
+                                <Download className="h-4 w-4" />
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <span className="font-bold">Export</span>
+                            </TooltipContent>
+                          </Tooltip>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button
+                                onClick={() => setIsMaximized(!isMaximized)}
+                                variant="ghost"
+                                size="icon"
+                                className="h-8 w-8"
+                              >
+                                {isMaximized ? (
+                                  <ArrowDownRight className="h-4 w-4" />
+                                ) : (
+                                  <ArrowUpLeft className="h-4 w-4" />
+                                )}
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <span className="font-bold">
+                                {isMaximized ? "Minimize" : "Maximize"}
+                              </span>
+                            </TooltipContent>
+                          </Tooltip>
+                          <Button
+                            onClick={() => setIsOpen(false)}
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8"
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </TooltipProvider>
                     </div>
                     {/* Chat Banner */}
                     <div></div>
