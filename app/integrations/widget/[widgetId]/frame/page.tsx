@@ -160,14 +160,45 @@ export default function Chatbot() {
     if (window && window.parent) {
       window.parent.postMessage(
         {
-          height: isMaximized ? 5000 : 750,
-          width: isMaximized ? 650 : 400,
+          type: "resize",
+          props: {
+            height: isMaximized ? 5000 : 750,
+            width: isMaximized ? 650 : 400,
+          },
         },
         "*"
       )
     }
     return () => {}
   }, [isMaximized])
+
+  useEffect(() => {
+    if (window && window.parent) {
+      // console.log("window loaded", window, window.parent)
+      window.parent.postMessage(
+        {
+          type: "onReady",
+          props: {
+            ready: true,
+          },
+        },
+        "*"
+      )
+    }
+    if (window) {
+      window.addEventListener("message", (event) => {
+        if (event.source !== window.parent) return
+        // console.log(event.data)
+        switch (event.data.type) {
+          case "setOpen":
+            setIsOpen(event.data.props.value)
+            break
+          // ... other message handlers
+        }
+      })
+    }
+    return () => {}
+  }, [])
 
   return (
     <div
