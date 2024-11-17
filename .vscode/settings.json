@@ -8,5 +8,12 @@
     "*.css": "tailwindcss"
   },
   "typescript.tsdk": "node_modules/typescript/lib",
-  "cSpell.words": ["trivago"]
+  "cSpell.words": [
+    "checkpointer",
+    "langchain",
+    "langgraph",
+    "ollama",
+    "tavily",
+    "trivago"
+  ]
 }
